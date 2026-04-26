@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: forecast
+  config:
+    import: optional:file:.env[.properties]
+
+server:
+  port: 8080
+
+springdoc:
+  api-docs:
+    path: /swagger.json
+  swagger-ui:
+    path: /swagger
+
+app:
+  openweather:
+    base-url: ${OPENWEATHER_BASE_URL}
+    api-key: ${OPENWEATHER_API_KEY}
