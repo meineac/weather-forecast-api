@@ -3,7 +3,7 @@ package com.forecast.client;
 import java.math.BigDecimal;
 
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
@@ -30,11 +30,10 @@ public class OpenWeatherClient implements WeatherDataClient {
                         .queryParam("units", "metric")
                         .build())
                 .retrieve()
+                .onStatus(HttpStatusCode::isError, (request, resp) -> {
+                    throw new RuntimeException("openweather returned bad status: " + resp.getStatusCode());
+                })
                 .toEntity(String.class);
-
-        if (response.getStatusCode() != HttpStatus.OK) {
-            throw new RuntimeException("openweather returned bad status: " + response.getStatusCode());
-        }
 
         try {
             ObjectMapper mapper = new ObjectMapper();
