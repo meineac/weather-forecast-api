@@ -30,7 +30,7 @@ public class OpenWeatherClient implements WeatherDataClient {
                         .queryParam("units", "metric")
                         .build())
                 .retrieve()
-                .onStatus(HttpStatusCode::isError, (request, resp) -> {
+                .onStatus(HttpStatusCode::isError, (_, resp) -> {
                     throw new RuntimeException("openweather returned bad status: " + resp.getStatusCode());
                 })
                 .toEntity(String.class);
