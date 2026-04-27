@@ -39,4 +39,11 @@ public class LocationResolverTest {
 
         assertThrows(IllegalArgumentException.class, () -> resolver.resolve("UnknownCity"));
     }
+
+    @Test
+    void resolve_CaseInsensitiveCity() {
+        Coordinate result = resolver.resolve("mInSk");
+        assertEquals(new BigDecimal("53.9006"), result.getLat());
+        assertEquals(new BigDecimal("27.5590"), result.getLon());
+    }
 }
