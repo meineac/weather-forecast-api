@@ -30,17 +30,17 @@ public class WeatherController {
     private final WeatherService service;
     private final LocationResolver locationResolver;
 
-    @GetMapping("/weather")
+    @GetMapping(value = "/weather", params = {"lat", "lon"})
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Get Current Weather", description = "Returns current weather for given coordinates")
-    public SuccessResponse<CurrentWeather> getCurrentWeather(
+    @Operation(summary = "Get Weather by Coordinates", description = "Returns current weather for given coordinates")
+    public SuccessResponse<CurrentWeather> getCurrentWeatherByCoordinates(
             @Parameter(description = "Latitude", required = true, example = "53.9006") @RequestParam BigDecimal lat,
             @Parameter(description = "Longitude", required = true, example = "27.5590") @RequestParam BigDecimal lon) {
         CurrentWeather result = service.getCurrentWeather(lat, lon);
         return new SuccessResponse<>(200, "Success", result);
     }
 
-    @GetMapping("/weather/city")
+    @GetMapping(value = "/weather", params = "city")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get Weather by City", description = "Returns current weather for a specific city")
     public SuccessResponse<CurrentWeather> getCurrentWeatherByCity(

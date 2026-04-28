@@ -85,7 +85,7 @@ public class WeatherControllerTest {
         when(service.getCurrentWeather(new BigDecimal("53.9006"), new BigDecimal("27.5590")))
                 .thenReturn(mockWeather);
 
-        mockMvc.perform(get("/api/v1/weather/city")
+        mockMvc.perform(get("/api/v1/weather")
                         .param("city", "Minsk")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -98,7 +98,7 @@ public class WeatherControllerTest {
         when(locationResolver.resolve("Atlantis")).thenThrow(
                 new IllegalArgumentException("Unsupported city: Atlantis"));
 
-        mockMvc.perform(get("/api/v1/weather/city")
+        mockMvc.perform(get("/api/v1/weather")
                 .param("city", "Atlantis")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
