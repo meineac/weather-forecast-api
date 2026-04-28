@@ -2,6 +2,7 @@ package com.forecast.controller;
 
 import java.math.BigDecimal;
 
+import com.forecast.service.LocationResolver;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "weather", description = "Weather API")
 public class WeatherController {
     private final WeatherService service;
+    private final LocationResolver locationResolver;
 
     @GetMapping("/weather")
     @ResponseStatus(HttpStatus.OK)
@@ -35,6 +37,16 @@ public class WeatherController {
             @Parameter(description = "Latitude", required = true, example = "53.9006") @RequestParam BigDecimal lat,
             @Parameter(description = "Longitude", required = true, example = "27.5590") @RequestParam BigDecimal lon) {
         CurrentWeather result = service.getCurrentWeather(lat, lon);
+        return new SuccessResponse<>(200, "Success", result);
+    }
+
+    @GetMapping("/weather/city")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get Weather by City", description = "Returns current weather for a specific city")
+    public SuccessResponse<CurrentWeather> getCurrentWeatherByCity(
+            @Parameter(description = "City name", required = true, example = "Minsk") @RequestParam String city) {
+        var coords = locationResolver.resolve(city);
+        CurrentWeather result = service.getCurrentWeather(coords.getLat(), coords.getLon());
         return new SuccessResponse<>(200, "Success", result);
     }
 
