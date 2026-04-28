@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class WeatherClientRegistryTest {
-    private WeatherClientRegistry registry;
+    static private WeatherClientRegistry registry;
 
     private static WeatherDataClient stubClient(String name) {
         return new WeatherDataClient() {
@@ -25,7 +25,7 @@ public class WeatherClientRegistryTest {
     }
 
     @BeforeAll
-    void setUp() {
+    static void setUp() {
         registry = new WeatherClientRegistry(List.of(
                 stubClient("openweather"),
                 stubClient("weatherapi")
@@ -55,7 +55,7 @@ public class WeatherClientRegistryTest {
 
     @Test
     void constructor_DuplicateProviderNames() {
-        assertThrows(IllegalStateException.class, () ->
+        assertThrows(IllegalArgumentException.class, () ->
                 new WeatherClientRegistry(List.of(
                         stubClient("openweather"),
                         stubClient("openweather")
