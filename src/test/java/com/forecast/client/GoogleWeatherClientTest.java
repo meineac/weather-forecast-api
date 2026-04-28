@@ -41,28 +41,6 @@ public class GoogleWeatherClientTest {
         assertEquals("googleweather", client.getProviderName());
     }
 
-
-    @Test
-    void getCurrentTemperature_Success() {
-        String jsonResponse = """
-                {
-                    "current": {
-                        "temperature": 18.5
-                    }
-                }
-                """;
-
-        mockServer.expect(requestTo("http://mock-googleweather.com/api/weather?key=test-google-key&" +
-                        "lat=53.9006&lon=27.5590"))
-                .andExpect(method(HttpMethod.GET))
-                .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
-
-        BigDecimal result = client.getCurrentTemperature(new BigDecimal("53.9006"), new BigDecimal("27.5590"));
-
-        assertEquals(new BigDecimal("18.5"), result);
-        mockServer.verify();
-    }
-
     @Test
     void getCurrentTemperature_Success() {
         String jsonResponse = """
@@ -73,7 +51,7 @@ public class GoogleWeatherClientTest {
                 }
                 """;
 
-        mockServer.expect(requestTo("http://mock-googleweather.com/api/weather?key=test-google-key&" +
+        mockServer.expect(requestTo("http://mock-googleweather.com/api/weather?key=test-api-key&" +
                         "lat=53.9006&lon=27.5590"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
@@ -86,7 +64,7 @@ public class GoogleWeatherClientTest {
 
     @Test
     void getCurrentTemperature_ReturnsHttpError() {
-        mockServer.expect(requestTo("http://mock-googleweather.com/api/weather?key=test-google-key&" +
+        mockServer.expect(requestTo("http://mock-googleweather.com/api/weather?key=test-api-key&" +
                         "lat=53.9006&lon=27.5590"))
                 .andRespond(withStatus(HttpStatus.FORBIDDEN));
 
@@ -107,7 +85,7 @@ public class GoogleWeatherClientTest {
                 }
                 """;
 
-        mockServer.expect(requestTo("http://mock-googleweather.com/api/weather?key=test-google-key&" +
+        mockServer.expect(requestTo("http://mock-googleweather.com/api/weather?key=test-api-key&" +
                         "lat=53.9006&lon=27.5590"))
                 .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
 
