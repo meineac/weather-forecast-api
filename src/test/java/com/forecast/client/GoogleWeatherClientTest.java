@@ -51,8 +51,8 @@ public class GoogleWeatherClientTest {
                 }
                 """;
 
-        mockServer.expect(requestTo("http://mock-googleweather.com/api/weather?key=test-api-key&" +
-                        "lat=53.9006&lon=27.5590"))
+        mockServer.expect(requestTo("http://mock-googleweather.com/currentConditions:lookup?key=test-api-key&" +
+                        "location.latitude=53.9006&location.longitude=27.5590"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
 
@@ -64,8 +64,8 @@ public class GoogleWeatherClientTest {
 
     @Test
     void getCurrentTemperature_ReturnsHttpError() {
-        mockServer.expect(requestTo("http://mock-googleweather.com/api/weather?key=test-api-key&" +
-                        "lat=53.9006&lon=27.5590"))
+        mockServer.expect(requestTo("http://mock-googleweather.com/currentConditions:lookup?key=test-api-key&" +
+                        "location.latitude=53.9006&location.longitude=27.5590"))
                 .andRespond(withStatus(HttpStatus.FORBIDDEN));
 
         RuntimeException exception = assertThrows(RuntimeException.class, () ->
@@ -85,8 +85,8 @@ public class GoogleWeatherClientTest {
                 }
                 """;
 
-        mockServer.expect(requestTo("http://mock-googleweather.com/api/weather?key=test-api-key&" +
-                        "lat=53.9006&lon=27.5590"))
+        mockServer.expect(requestTo("http://mock-googleweather.com/currentConditions:lookup?key=test-api-key&" +
+                        "location.latitude=53.9006&location.longitude=27.5590"))
                 .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
 
         RuntimeException exception = assertThrows(RuntimeException.class, () ->
