@@ -92,4 +92,17 @@ public class WeatherControllerTest {
                 .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.data.temperature").value(15.5));
     }
+
+    @Test
+    void getCurrentWeatherByCity_InvalidCity() throws Exception {
+        when(locationResolver.resolve("Atlantis")).thenThrow(
+                new IllegalArgumentException("Unsupported city: Atlantis"));
+
+        mockMvc.perform(get("/api/v1/weather/city")
+                .param("city", "Atlantis")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.message").value("Unsupported city: Atlantis"));
+    }
 }
