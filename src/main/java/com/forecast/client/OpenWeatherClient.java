@@ -3,7 +3,9 @@ package com.forecast.client;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.forecast.model.ForecastWeather;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -80,14 +82,30 @@ public class OpenWeatherClient implements WeatherDataClient, ForecastDataClient 
                 throw new RuntimeException("failed to decode response: missing forecast list");
             }
 
-            List<ForecastWeather.DailyForecast> days = new ArrayList<>();
-            for (JsonNode node : listNode) {
-                JsonNode mainNode = node.get("main");
+            Map<LocalDate, List<JsonNode>> groupedByDay = new LinkedHashMap<>();
+            for (var node : listNode) {
                 long timestamp = node.get("dt").asLong();
                 LocalDate date = LocalDate.ofEpochDay(timestamp / 86400L);
-                BigDecimal minTemp = new BigDecimal(mainNode.get("temp_min").asText());
-                BigDecimal maxTemp = new BigDecimal(mainNode.get("temp_max").asText());
-                days.add(new ForecastWeather.DailyForecast(date, minTemp, maxTemp));
+
+                groupedByDay.computeIfAbsent(date, _ -> new java.util.ArrayList<>()).add(node);
+            }
+
+            List<ForecastWeather.DailyForecast> days = new ArrayList<>();
+
+            for (var entry : groupedByDay.entrySet()) {
+                BigDecimal dayMin = null;
+                BigDecimal dayMax = null;
+
+                for (var node : entry.getValue()) {
+                    JsonNode mainNode = node.get("main");
+                    BigDecimal min = new BigDecimal(mainNode.get("temp_min").asText());
+                    BigDecimal max = new BigDecimal(mainNode.get("temp_max").asText());
+
+                    if (dayMin == null || min.compareTo(dayMin) < 0) dayMin = min;
+                    if (dayMax == null || max.compareTo(dayMax) > 0) dayMax = max;
+                }
+
+                days.add(new ForecastWeather.DailyForecast(entry.getKey(), dayMin, dayMax));
             }
 
             return new ForecastWeather(days);
