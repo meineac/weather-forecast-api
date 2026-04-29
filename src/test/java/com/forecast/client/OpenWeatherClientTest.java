@@ -137,4 +137,36 @@ class OpenWeatherClientTest {
         assertEquals(LocalDate.ofEpochDay(1682424000L / 86400L), result.getDays().getFirst().getDate());
         mockServer.verify();
     }
+
+    @Test
+    void getForecast_AggregatesMultipleBlocksPerDay() {
+        String jsonResponse = """
+                {
+                  "list": [
+                    {
+                      "dt": 1777453200,
+                      "main": { "temp_min": 5.46, "temp_max": 5.46 }
+                    },
+                    {
+                      "dt": 1777464000,
+                      "main": { "temp_min": 5.97, "temp_max": 6.99 }
+                    }
+                  ]
+                }
+                """;
+
+        mockServer.expect(requestTo("http://mock-openweather.com/forecast?appid=test-api-key&" +
+                        "lat=53.9006&lon=27.5590&units=metric"))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
+
+        ForecastWeather result = client.getForecast(new BigDecimal("53.9006"), new BigDecimal("27.5590"));
+
+        assertEquals(1, result.getDays().size());
+        assertEquals(LocalDate.ofEpochDay(1777453200L / 86400L), result.getDays().getFirst().getDate());
+        assertEquals(new BigDecimal("5.46"), result.getDays().getFirst().getMinTemperature());
+        assertEquals(new BigDecimal("6.99"), result.getDays().getFirst().getMaxTemperature());
+
+        mockServer.verify();
+    }
 }
