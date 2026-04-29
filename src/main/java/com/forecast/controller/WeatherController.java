@@ -2,6 +2,7 @@ package com.forecast.controller;
 
 import java.math.BigDecimal;
 
+import com.forecast.model.ForecastWeather;
 import com.forecast.service.LocationResolver;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -54,6 +55,39 @@ public class WeatherController {
                     200,
                     "Success",
                     service.getCurrentWeather(coords.getLat(), coords.getLon(), provider)
+            );
+        } else {
+            throw new IllegalArgumentException("Provide either 'city' or both 'lat' and 'lon'");
+        }
+    }
+
+    @GetMapping("/forecast")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get Forecast", description = "Get weather forecast by city name OR lat/lon coordinates")
+    public SuccessResponse<ForecastWeather> getForecastWeather(
+            @Parameter(description = "Latitude", example = "53.9006")
+            @RequestParam(required = false) BigDecimal lat,
+
+            @Parameter(description = "Longitude", example = "27.5590")
+            @RequestParam(required = false) BigDecimal lon,
+
+            @Parameter(description = "City name", example = "Minsk")
+            @RequestParam(required = false) String city,
+
+            @Parameter(description = "Provider name", required = true, example = "openweather")
+            @RequestParam String provider) {
+        if (lat != null && lon != null) {
+            return new SuccessResponse<>(
+                    200,
+                    "Success",
+                    service.getForecastWeather(lat, lon, provider)
+            );
+        } else if (city != null) {
+            var coords = locationResolver.resolve(city);
+            return new SuccessResponse<>(
+                    200,
+                    "Success",
+                    service.getForecastWeather(coords.getLat(), coords.getLon(), provider)
             );
         } else {
             throw new IllegalArgumentException("Provide either 'city' or both 'lat' and 'lon'");
