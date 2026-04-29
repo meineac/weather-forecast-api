@@ -169,4 +169,26 @@ class OpenWeatherClientTest {
 
         mockServer.verify();
     }
+
+    @Test
+    void getForecast_EmptyList() {
+        String jsonResponse = """
+                {
+                  "list": [
+                  ]
+                }
+                """;
+
+        mockServer.expect(requestTo("http://mock-openweather.com/forecast?appid=test-api-key&" +
+                        "lat=53.9006&lon=27.5590&units=metric"))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+                client.getForecast(new BigDecimal("53.9006"), new BigDecimal("27.5590")));
+
+        assertEquals("failed to decode response: missing forecast list", exception.getMessage());
+
+        mockServer.verify();
+    }
 }
