@@ -78,7 +78,7 @@ public class OpenWeatherClient implements WeatherDataClient, ForecastDataClient 
             JsonNode rootNode = mapper.readTree(response.getBody());
             JsonNode listNode = rootNode.get("list");
 
-            if (listNode == null || !listNode.isArray()) {
+            if (listNode == null || !listNode.isArray() || listNode.isEmpty()) {
                 throw new RuntimeException("failed to decode response: missing forecast list");
             }
 
