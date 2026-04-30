@@ -122,7 +122,7 @@ public class GoogleWeatherClientTest {
                 }
                 """;
 
-        mockServer.expect(requestTo("http://mock-googleweather.com/currentConditions:lookup?" +
+        mockServer.expect(requestTo("http://mock-googleweather.com/forecast/days:lookup?" +
                 "key=test-api-key&location.latitude=53.9006&location.longitude=27.5590"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
