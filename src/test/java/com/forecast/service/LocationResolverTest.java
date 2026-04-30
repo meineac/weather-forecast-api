@@ -1,7 +1,7 @@
 package com.forecast.service;
 
 import com.forecast.properties.CityProperties;
-import com.forecast.properties.CityProperties.Coordinate;
+import com.forecast.model.Coordinate;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +26,7 @@ public class LocationResolverTest {
 
     @Test
     void resolve_ValidCity() {
-        CityProperties.Coordinate result = resolver.resolve("Minsk");
+        Coordinate result = resolver.resolve("Minsk");
 
         assertEquals(new BigDecimal("53.9006"), result.getLat());
         assertEquals(new BigDecimal("27.5590"), result.getLon());

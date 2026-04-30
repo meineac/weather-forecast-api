@@ -1,8 +1,8 @@
 package com.forecast.controller;
 
+import com.forecast.model.Coordinate;
 import com.forecast.model.CurrentWeather;
 import com.forecast.model.ForecastWeather;
-import com.forecast.properties.CityProperties;
 import com.forecast.service.LocationResolver;
 import com.forecast.service.WeatherService;
 import org.junit.jupiter.api.Test;
@@ -86,7 +86,7 @@ public class WeatherControllerTest {
 
     @Test
     void getCurrentWeatherByCity_Success() throws Exception {
-        CityProperties.Coordinate mockCoords = new CityProperties.Coordinate();
+        Coordinate mockCoords = new Coordinate();
         mockCoords.setLat(new BigDecimal("53.9006"));
         mockCoords.setLon(new BigDecimal("27.5590"));
 
@@ -149,7 +149,7 @@ public class WeatherControllerTest {
 
     @Test
     void getForecastWeatherByCity_Success() throws Exception {
-        CityProperties.Coordinate mockCoords = new CityProperties.Coordinate();
+        Coordinate mockCoords = new Coordinate();
         mockCoords.setLat(new BigDecimal("53.9006"));
         mockCoords.setLon(new BigDecimal("27.5590"));
 

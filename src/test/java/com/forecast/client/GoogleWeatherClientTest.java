@@ -125,7 +125,7 @@ public class GoogleWeatherClientTest {
                 """;
 
         mockServer.expect(requestTo("http://mock-googleweather.com/forecast/days:lookup?" +
-                "key=test-api-key&location.latitude=53.9006&location.longitude=27.5590"))
+                "key=test-api-key&location.latitude=53.9006&location.longitude=27.5590&pageSize=10"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
 
@@ -153,7 +153,7 @@ public class GoogleWeatherClientTest {
     })
     void getForecast_EmptyList(String jsonResponse) {
         mockServer.expect(requestTo("http://mock-googleweather.com/forecast/days:lookup?" +
-                        "key=test-api-key&location.latitude=53.9006&location.longitude=27.5590"))
+                        "key=test-api-key&location.latitude=53.9006&location.longitude=27.5590&pageSize=10"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
 

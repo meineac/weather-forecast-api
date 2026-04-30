@@ -1,7 +1,7 @@
 package com.forecast.service;
 
 import com.forecast.properties.CityProperties;
-import com.forecast.properties.CityProperties.Coordinate;
+import com.forecast.model.Coordinate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
