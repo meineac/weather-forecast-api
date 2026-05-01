@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -148,8 +148,6 @@ public class WeatherControllerTest {
     @Test
     void getForecastWeatherByCity_Success() throws Exception {
         Coordinate mockCoords = new Coordinate(new BigDecimal("53.9006"), new BigDecimal("27.5590"));
-        mockCoords.setLat(new BigDecimal("53.9006"));
-        mockCoords.setLon(new BigDecimal("27.5590"));
 
         ForecastWeather mockForecast = new ForecastWeather(List.of());
 
@@ -164,5 +162,28 @@ public class WeatherControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200));
 
+    }
+
+    @Test
+    void getCurrentWeatherBatch_Success() throws Exception {
+        CurrentWeather mockWeatherMinsk = new CurrentWeather(new BigDecimal("22.5"));
+        CurrentWeather mockWeatherLondon = new CurrentWeather(new BigDecimal("15.0"));
+
+        when(service.getCurrentWeatherBatch(anyList(), eq(PROVIDER)))
+                .thenReturn(List.of(mockWeatherMinsk, mockWeatherLondon));
+
+        mockMvc.perform(get("/api/v1/weather/batch")
+                        .param("cities", "Minsk", "London")
+                        .param("provider", PROVIDER)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.message").value("Success"))
+
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data.length()").value(2))
+
+                .andExpect(jsonPath("$.data[0].temperature").value(22.5))
+                .andExpect(jsonPath("$.data[1].temperature").value(15.0));
     }
 }
