@@ -1,7 +1,9 @@
 package com.forecast.controller;
 
 import java.math.BigDecimal;
+import java.util.List;
 
+import com.forecast.model.Coordinate;
 import com.forecast.model.ForecastWeather;
 import com.forecast.service.LocationResolver;
 import org.springframework.http.HttpStatus;
@@ -92,6 +94,28 @@ public class WeatherController {
         } else {
             throw new IllegalArgumentException("Provide either 'city' or both 'lat' and 'lon'");
         }
+    }
+
+    @GetMapping("/weather/batch")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get Current Weather Batch", description = "Get current weather for a list of locations")
+    public SuccessResponse<List<CurrentWeather>> getCurrentWeatherBatch(
+            @Parameter(description = "List of city names", required = true, example = "Minsk,London")
+            @RequestParam List<String> cities,
+
+            @Parameter(description = "Provider name", required = true, example = "openweather")
+            @RequestParam String provider) {
+        if (cities == null || cities.isEmpty()) {
+            throw new IllegalArgumentException("Provide a list of cities");
+        }
+
+        List<Coordinate> coordinates = cities.stream()
+                .map(locationResolver::resolve)
+                .toList();
+
+        List<CurrentWeather> results = service.getCurrentWeatherBatch(coordinates, provider);
+
+        return new SuccessResponse<>(200, "Success", results);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
