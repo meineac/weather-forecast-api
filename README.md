@@ -72,7 +72,7 @@ Create `.env` file where you provide you API keys
 cp .env.example .env
 ```
 
-API docs: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+API docs: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
 
 ### API Overview
 
